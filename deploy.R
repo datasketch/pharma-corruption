@@ -1,15 +1,13 @@
 
 # readRenviron("~/.Renviron")
 
-print(Sys.getenv("SHINYAPPS_ACCOUNT"))
-print(Sys.getenv("SHINYAPPS_TOKEN"))
 rsconnect::setAccountInfo(name = Sys.getenv("SHINYAPPS_ACCOUNT"),
                           token = Sys.getenv("SHINYAPPS_TOKEN"),
                           secret = Sys.getenv("SHINYAPPS_SECRET"))
 rsconnect::deployApp(
-  appDir = "R/",
-  appName = "OrcaOperativos",
-  appTitle = "OrcaOperativos",
+  appDir = "inst/pharma-corruption-app/",
+  appName = "pharma-corruption-app",
+  appTitle = "pharma-corruption-app",
   logLevel = "verbose",
   forceUpdate= TRUE
   # # exclude hidden files and renv directory (if present)

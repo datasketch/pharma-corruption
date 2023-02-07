@@ -7,9 +7,13 @@ Authors@R:
 Description: What the package does (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
 Depends: 
     R (>= 2.10)
-Imports: 
+Imports:
     dplyr,
     htmltools,
     purrr,
@@ -17,22 +21,24 @@ Imports:
     yaml
 Suggests:
     makeup,
+    parmesan,
     homodatum,
     dstools,
     dsmodules,
     data.table,
     hgchmagic,
     lfltmagic,
-    testthat (>= 3.0.0)
-Remotes: 
+    testthat (>= 3.0.0),
+    webshot2,
+    shinypanels,
+    shinycustomloader
+Remotes:
+    datasketch/parmesan,
     datasketch/makeup,
     datasketch/homodatum,
     datasketch/dstools,
     datasketch/dsmodules,
     datasketch/hgchmagic,
-    datasketch/lfltmagic
-Config/testthat/edition: 3
-Encoding: UTF-8
-LazyData: true
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+    datasketch/lfltmagic,
+    datasketch/shinypanels,
+    emitanaka/shinycustomloader
