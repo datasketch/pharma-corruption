@@ -21,6 +21,8 @@ jobs:
           extra-packages: |
             any::pkgload, any::rcmdcheck
       - name: Execute Script
+         env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Rscript -e "install.packages('devtools',dependencies=TRUE)"
           Rscript -e "install.packages('packageVersion', dependencies=TRUE)"

@@ -30,6 +30,8 @@ jobs:
           Rscript -e "remotes::install_github('datasketch/pharma-corruption', auth_token = NULL)"
 
       - name: Execute Directory
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pwd
           cd inst/pharma-corruption-app
