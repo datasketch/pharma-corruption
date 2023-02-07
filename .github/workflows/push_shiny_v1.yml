@@ -19,6 +19,8 @@ jobs:
           extra-packages: |
             any::pkgload, any::rcmdcheck
       - name: Execute Script
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Rscript -e "install.packages('devtools',dependencies=TRUE)"
           Rscript -e "install.packages('packageVersion', dependencies=TRUE)"
@@ -30,8 +32,6 @@ jobs:
           Rscript -e "remotes::install_github('datasketch/pharma-corruption', auth_token = NULL)"
 
       - name: Execute Directory
-        env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pwd
           cd inst/pharma-corruption-app
