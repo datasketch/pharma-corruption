@@ -1,7 +1,7 @@
 name: update_shiny_cron_v1_git
 on:
   schedule:
-  - cron: 0 3 * * *
+  - cron: 0 6 * * *
 jobs:
   build_and_deploy:
     runs-on: ubuntu-20.04
@@ -21,7 +21,7 @@ jobs:
           extra-packages: |
             any::pkgload, any::rcmdcheck
       - name: Execute Script
-         env:
+        env:
           GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
         run: |
           Rscript -e "install.packages('devtools',dependencies=TRUE)"
