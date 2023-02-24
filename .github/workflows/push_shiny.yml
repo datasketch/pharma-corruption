@@ -31,8 +31,8 @@ jobs:
           Rscript -e "install.packages('usethis', dependencies=TRUE)"
           Rscript -e "install.packages('rsconnect',dependencies=TRUE)"
           Rscript -e "install.packages('remotes',dependencies=TRUE)"
-          Rscript -e  "devtools::install_github('datasketch/dsvizopts', ref = 'bff1582f4b6e17600bf92937adf100270c42b91d')
-          Rscript -e  "devtools::install_github('datasketch/hgchmagic', ref = '767c3867535994f1a1fd8c24594d40db3128843d')
+          Rscript -e  "devtools::install_github('datasketch/dsvizopts', ref = 'bff1582f4b6e17600bf92937adf100270c42b91d')"
+          Rscript -e  "devtools::install_github('datasketch/hgchmagic', ref = '767c3867535994f1a1fd8c24594d40db3128843d')"
           Rscript -e "remotes::install_github('datasketch/pharma-corruption', auth_token = NULL)"
 
       - name: Execute Directory
