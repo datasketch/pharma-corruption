@@ -240,7 +240,7 @@ server <- function(input, output, session) {
       }
     }
     if (actual_but$active != "map_bubbles") {
-      dv <- dv |> var_aggregation(dic_pharma, Total = dplyr::n())
+      dv <- dv |> var_aggregation(dic_pharma, `Number of articles` = dplyr::n())
     } else {
       dv <- dv |> tidyr::drop_na()
     }
