@@ -158,10 +158,12 @@ server <- function(input, output, session) {
         df <- df |> dplyr::filter(`Country / region` %in% input$id_country___region)
       }
     }
-    strsplit(c("All", df$`Health categories`), split = ",") |>
+    ch <- strsplit( df$`Health categories`, split = ",") |>
       unlist() |>
       unique() |>
       setdiff("NA")
+    ch <- c("All", sort(ch))
+    ch
   })
 
   corruption_opts <- reactive({
@@ -172,10 +174,12 @@ server <- function(input, output, session) {
         df <- df |> dplyr::filter(`Country / region` %in% input$id_country___region)
       }
     }
-    strsplit(c("All", df$`Corruption categories`), split = ",") |>
+    ch <- strsplit(df$`Corruption categories`, split = ",") |>
       unlist() |>
       unique() |>
       setdiff("NA")
+    ch <- c("All", sort(ch))
+    ch
   })
 
 
