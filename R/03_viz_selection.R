@@ -12,7 +12,7 @@ viz_selection <- function(data, dic, viz) {
                                  "list" = "Cat")
   library <- "hgchmagic"
   pseudonym <- "hgch"
-
+  extrafrtype <- "Num"
   if (viz == "map") {
     dic_viz$ftype <- dplyr::recode(dic_viz$ftype, "Cat" = "Gnm")
     viz <- "choropleth"
@@ -23,6 +23,7 @@ viz_selection <- function(data, dic, viz) {
     viz <- "bubbles"
     library <- "lfltmagic"
     pseudonym <- "lflt"
+    extrafrtype <- NULL
   } else if (viz == "line") {
     dic_viz$ftype <- dplyr::recode(dic_viz$ftype, "Date" = "Yea")
     viz <- "line"
@@ -34,6 +35,6 @@ viz_selection <- function(data, dic, viz) {
                      pseudonym, "_",
                      viz, "_",
                      paste0(dic_viz$ftype, collapse = ""),
-                     "Num")
+                     extrafrtype)
   viz_type
 }

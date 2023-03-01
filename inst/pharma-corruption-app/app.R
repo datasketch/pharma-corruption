@@ -1,4 +1,4 @@
-webshot::install_phantomjs(force = T)
+#webshot::install_phantomjs(force = T)
 library(dsmodules)
 library(hgchmagic)
 library(lfltmagic)
@@ -239,8 +239,13 @@ server <- function(input, output, session) {
         dv <- dv |> dplyr::select(-`Country / region`)
       }
     }
+    if (actual_but$active != "map_bubbles") {
+      dv <- dv |> var_aggregation(dic_pharma, Total = dplyr::n())
+    } else {
+      dv <- dv |> tidyr::drop_na()
+    }
 
-    dv |> var_aggregation(dic_pharma, Total = dplyr::n())
+    dv
 
   })
 
@@ -335,7 +340,8 @@ server <- function(input, output, session) {
       opts$map_min_size <- 3
       opts$map_max_size <- 5
       opts$na_color <- "transparent"
-      opts$tooltip <- "<b>Total: </b>{Total}"
+      opts$map_cluster <- TRUE
+      #opts$tooltip <- "<b>Total: </b>{Total}"
       opts$palette_colors <- "#ef4e00"
     }
 
@@ -355,6 +361,7 @@ server <- function(input, output, session) {
   viz_down <- reactive({
     req(data_viz())
     viz <- viz_selection(data_viz(), dic_pharma, actual_but$active)
+    print(viz)
     suppressWarnings(do.call(eval(parse(text=viz)),viz_opts()))
   })
 

@@ -38,7 +38,8 @@ Remotes:
     datasketch/homodatum,
     datasketch/dstools,
     datasketch/dsmodules,
-    datasketch/hgchmagic,
+    datasketch/hgchmagic@767c386,
     datasketch/lfltmagic,
     datasketch/shinypanels,
-    emitanaka/shinycustomloader
+    emitanaka/shinycustomloader,
+    datasketch/dsvizopts@bff1582
