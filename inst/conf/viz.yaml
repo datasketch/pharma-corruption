@@ -1,16 +1,16 @@
 map:
- - Country / region
+ - Country Region
 map_bubbles:
- - location.lon
- - location.lat
+ - location lon
+ - location lat
 line:
  - Health categories
  - Published-at
 bar:
- - Country / region
+ - Country Region
  - Corruption categories
 treemap:
- - Country / region
+ - Country Region
  - Corruption categories
 
 

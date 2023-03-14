@@ -116,7 +116,7 @@ server <- function(input, output, session) {
     req(actual_but$active)
     req(data_titles())
     df <- data_titles()
-    cp <- unique(c("All", df$`Country / region`)) |>
+    cp <- unique(c("All", df$`Country Region`)) |>
       setdiff("NA")
     if (actual_but$active %in% c("map_bubbles", "map")) {
       cp <- setdiff(cp, "No Location")
@@ -129,9 +129,9 @@ server <- function(input, output, session) {
   range_dates <- reactive({
     req(data_titles())
     df <- data_titles()
-    if (!is.null(input$id_country___region)) {
-      if (!any(input$id_country___region %in% c("All", ""))) {
-        df <- df |> dplyr::filter(`Country / region` %in% input$id_country___region)
+    if (!is.null(input$id_country_region)) {
+      if (!any(input$id_country_region %in% c("All", ""))) {
+        df <- df |> dplyr::filter(`Country Region` %in% input$id_country_region)
       }
     }
     c(min(df$`Published-at`, na.rm = TRUE),
@@ -153,9 +153,9 @@ server <- function(input, output, session) {
   health_opts <- reactive({
     req(data_titles())
     df <- data_titles()
-    if (!is.null(input$id_country___region)) {
-      if (!any(input$id_country___region %in% c("All", ""))) {
-        df <- df |> dplyr::filter(`Country / region` %in% input$id_country___region)
+    if (!is.null(input$id_country_region)) {
+      if (!any(input$id_country_region %in% c("All", ""))) {
+        df <- df |> dplyr::filter(`Country Region` %in% input$id_country_region)
       }
     }
     ch <- strsplit( df$`Health categories`, split = ",") |>
@@ -169,9 +169,9 @@ server <- function(input, output, session) {
   corruption_opts <- reactive({
     req(data_titles())
     df <- data_titles()
-    if (!is.null(input$id_country___region)) {
-      if (!any(input$id_country___region %in% c("All", ""))) {
-        df <- df |> dplyr::filter(`Country / region` %in% input$id_country___region)
+    if (!is.null(input$id_country_region)) {
+      if (!any(input$id_country_region %in% c("All", ""))) {
+        df <- df |> dplyr::filter(`Country Region` %in% input$id_country_region)
       }
     }
     ch <- strsplit(df$`Corruption categories`, split = ",") |>
@@ -198,8 +198,8 @@ server <- function(input, output, session) {
   # updates all -------------------------------------------------------------
 
   observe({
-    if ("All" %in% input$id_country___region) {
-      updateSelectizeInput(session, inputId = "id_country___region", selected = "All")
+    if ("All" %in% input$id_country_region) {
+      updateSelectizeInput(session, inputId = "id_country_region", selected = "All")
     }
     if ("All" %in% input$id_health_categories) {
       updateSelectizeInput(session, inputId = "id_health_categories", selected = "All")
@@ -219,8 +219,7 @@ server <- function(input, output, session) {
                       dic = dic_pharma,
                       var_inputs = ls,
                       .id = "story-id") |>
-      dplyr::select(-`Other Articles`, -entityname)
-
+      dplyr::select(-`Other Articles`)
     df
   })
 
@@ -237,10 +236,10 @@ server <- function(input, output, session) {
     dv <- data_down() |>
       variable_selection(viz = actual_but$active)
     if (actual_but$active %in% c("bar", "treemap")) {
-      id_r <- input$id_country___region
+      id_r <- input$id_country_region
       if (is.null(id_r)) id_r <- "All"
       if (any(grepl("All", id_r))) {
-        dv <- dv |> dplyr::select(-`Country / region`)
+        dv <- dv |> dplyr::select(-`Country Region`)
       }
     }
     if (actual_but$active != "map_bubbles") {
@@ -298,7 +297,7 @@ server <- function(input, output, session) {
       if (unique(dv[[1]])[1] == "No Location") dv <- NULL
     }
 
-    #print(unique(dv$`Country / region`))
+    #print(unique(dv$`Country Region`))
 
     opts <- list(
       data = dv,
@@ -393,7 +392,7 @@ server <- function(input, output, session) {
     df$URL <- paste0("<a href='",df$URL,"'  target='_blank'>","link to view","</a>")
     df$`Links to similar articles` <- paste0("<a href='", df$`Links to similar articles`, "'  target='_blank'>","link to view","</a>")
     df <- df |> dplyr::select(`Original title` = `native-title`, `URL`, `Media type`, `Source`, `English title`, `Publication year`,
-                              `Publication date`, `Country / region`, `Corruption case study`, `Associated topic`,
+                              `Publication date`, `Country Region`, `Corruption case study`, `Associated topic`,
                               `Links to similar articles`, `Titles of similar articles`, `Corruption categories`,
                               `Health categories`)
     dtable <- DT::datatable(df,
@@ -471,12 +470,12 @@ server <- function(input, output, session) {
   observeEvent(input$lflt_viz_shape_click, {
     print(input$lflt_viz_shape_click)
     if (is.null(data_viz())) return()
-    if (!"Country / region" %in% names(data_viz())) return()
+    if (!"Country Region" %in% names(data_viz())) return()
     req(actual_but$active)
     if (actual_but$active != "map") return()
     click <- input$lflt_viz_shape_click
     if (!is.null(click)) {
-      click_viz$info <- list("id_country___region" = click$id)
+      click_viz$info <- list("id_country_region" = click$id)
     }
 
   })
@@ -498,9 +497,9 @@ server <- function(input, output, session) {
 
       if (!is.null(click)) {
         click_viz$info <- list("id_corruption_categories" = click$id)
-        if ("Country / region" %in% names(data_viz())) {
+        if ("Country Region" %in% names(data_viz())) {
           click_viz$info <- list("id_corruption_categories" = click$id,
-                                 "id_country___region" = click$cat)
+                                 "id_country_region" = click$cat)
         }
       }
 
@@ -529,7 +528,7 @@ server <- function(input, output, session) {
                      class_body = "click-text",
                      id = "story-id",
                      "English title",
-                     "Country / region",
+                     "Country Region",
                      "Published-at",
                      "Health categories",
                      "Corruption categories",

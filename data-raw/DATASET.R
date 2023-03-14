@@ -70,7 +70,8 @@ data_pharma <- data_pharma[-grep(paste0(var_list, collapse = "|"),
                                  names(data_pharma))]
 
 data_pharma <- data_pharma |> left_join(unlist_pharma)
-
+data_pharma$`location lat` <- as.numeric(data_pharma$`location lat`)
+data_pharma$`location lon` <- as.numeric(data_pharma$`location lon`)
 
 # save data and dic -------------------------------------------------------
 
