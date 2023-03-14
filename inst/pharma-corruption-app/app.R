@@ -340,8 +340,8 @@ server <- function(input, output, session) {
 
     if (actual_but$active == "map_bubbles") {
       opts$legend_show <- FALSE
-      opts$map_min_size <- 3
-      opts$map_max_size <- 5
+      opts$map_min_size <- 7
+      opts$map_max_size <- 7
       opts$na_color <- "transparent"
       opts$map_cluster <- TRUE
       #opts$tooltip <- "<b>Total: </b>{Total}"
@@ -375,10 +375,18 @@ server <- function(input, output, session) {
     viz_down()
   })
 
+  output$lflt_viz_bubbles <- leaflet::renderLeaflet({
+    req(actual_but$active)
+    req(data_viz())
+    if (!actual_but$active %in% c( "map_bubbles")) return()
+    viz_down() |>
+      leaflet::setView(lng = 0, lat = -5, 1.3)
+  })
+
   output$lflt_viz <- leaflet::renderLeaflet({
     req(actual_but$active)
     req(data_viz())
-    if (!actual_but$active %in% c("map", "map_bubbles")) return()
+    if (!actual_but$active %in% c( "map")) return()
     viz_down() |>
       leaflet::setView(lng = 0, lat = -5, 1.3)
   })
@@ -422,16 +430,21 @@ server <- function(input, output, session) {
       width_viz <- input$dimension[1] - 600
     }
 
-    if (actual_but$active != "table") {
-      if (is.null(data_viz())) return(
-        HTML("Unfortunately, there are no search results for your requested filters.<br/>
-             Please try again with different filters"))
-    }
+    # if (actual_but$active != "table") {
+    #   if (is.null(data_viz())) return(
+    #     HTML("Unfortunately, there are no search results for your requested filters.<br/>
+    #          Please try again with different filters"))
+    # }
 
     viz <- actual_but$active
-    if (viz %in% c("map", "map_bubbles")) {
+    if (viz %in% c("map")) {
       shinycustomloader::withLoader(
         leaflet::leafletOutput("lflt_viz", height = heigh_viz),
+        type = "html", loader = "loader4"
+      )
+     } else if (viz %in% c("map_bubbles")) {
+      shinycustomloader::withLoader(
+        leaflet::leafletOutput("lflt_viz_bubbles", height = heigh_viz),
         type = "html", loader = "loader4"
       )
     } else if (viz == "table") {
@@ -454,12 +467,13 @@ server <- function(input, output, session) {
 
 
 
-  observeEvent(input$lflt_viz_marker_click, {
+  observeEvent(input$lflt_viz_bubbles_marker_click, {
+    print(input$lflt_viz_bubbles_marker_click)
     if (is.null(data_viz())) return()
-    if (!"location.lat" %in% names(data_viz())) return()
+    if (!"location lat" %in% names(data_viz())) return()
     req(actual_but$active)
     if (actual_but$active != "map_bubbles") return()
-    click <- input$lflt_viz_marker_click
+    click <- input$lflt_viz_bubbles_marker_click
     if (!is.null(click)) {
       click_viz$info <- list("id_location_lat" = click$lat,
                              "id_location_lon" = click$lng)
