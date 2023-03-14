@@ -453,6 +453,8 @@ server <- function(input, output, session) {
 
   click_viz <- reactiveValues(info = NULL)
 
+
+
   observeEvent(input$lflt_viz_marker_click, {
     if (is.null(data_viz())) return()
     if (!"location.lat" %in% names(data_viz())) return()
@@ -467,6 +469,7 @@ server <- function(input, output, session) {
   })
 
   observeEvent(input$lflt_viz_shape_click, {
+    print(input$lflt_viz_shape_click)
     if (is.null(data_viz())) return()
     if (!"Country / region" %in% names(data_viz())) return()
     req(actual_but$active)

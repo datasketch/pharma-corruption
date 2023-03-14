@@ -12,18 +12,19 @@ googledrive::drive_deauth()
 googledrive::drive_download("https://drive.google.com/file/d/1pGGRJV9RH3yBeG4qXdNBL64HsxELd47B/view",
                                          path = "data-raw/data/aimon.json", overwrite = TRUE)
 data_pharma <- stream_in(file("data-raw/data/aimon.json"))
+names(data_pharma) <- gsub("\\.", " ", names(data_pharma))
 data_pharma$`Published-at` <- lubridate::as_date(
   lubridate::ymd_hms(data_pharma$`Published Date`))
 data_pharma$`Corruption Case Study`[data_pharma$`Corruption Case Study`] <- "Yes"
 data_pharma$`Corruption Case Study`[is.na(data_pharma$`Corruption Case Study`)] <- "No"
 data_pharma <- data_pharma |>
   rename( URL = url,
-          `Media type` = `media-type`,
+          `story-id` = `story id`,
+          `Media type` = `media type`,
           `Source` = `Source Name`,
           `English title` = `Title`,
           `Publication year` = `Year`,
           `Publication date` = `Published Date`,
-          `Country / region` = `Country/Region`,
           `Corruption case study` = `Corruption Case Study`,
           `Associated topic` = `topics`,
           `Links to similar articles` = `Similar Stories Links`,
@@ -61,7 +62,7 @@ unlist_pharma <- map(var_list, function (by) {
     select(`story-id`, {{ by }}) |>
     unnest({{ by }}, keep_empty = TRUE) |>
     group_by(`story-id`) |>
-    dplyr::summarise_each(funs(paste_vector))
+    dplyr::summarise_each(list(paste_vector))
   df
 }) |>  reduce(left_join, by = "story-id")
 
