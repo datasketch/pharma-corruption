@@ -330,12 +330,12 @@ server <- function(input, output, session) {
     } else {
       opts$clickFunction <- htmlwidgets::JS(myFunc)
       opts$palette_colors <- c("#ef4e00", "#ffe700", "#6fcbff", "#62ce00",
-                                        "#ffeea8", "#da3592","#0000ff")
-                                        if (actual_but$active == "line") {
-                                          opts$marker_enabled <- FALSE
-                                          # opts$palette_colors <- c("#ef4e00", "#ffe700", "#6fcbff", "#62ce00",
-                                          #                                   "#ffeea8", "#da3592","#0000ff")
-                                        }
+                               "#ffeea8", "#da3592","#0000ff")
+      if (actual_but$active == "line") {
+        opts$marker_enabled <- FALSE
+        # opts$palette_colors <- c("#ef4e00", "#ffe700", "#6fcbff", "#62ce00",
+        #                                   "#ffeea8", "#da3592","#0000ff")
+      }
     }
 
     if (actual_but$active == "map_bubbles") {
@@ -343,7 +343,7 @@ server <- function(input, output, session) {
       opts$map_min_size <- 7
       opts$map_max_size <- 7
       opts$na_color <- "transparent"
-      opts$map_cluster <- TRUE
+      opts$map_cluster <- TRUE#do.call("markerClusterOptions", list(disableClusteringAtZoom = 18))
       #opts$tooltip <- "<b>Total: </b>{Total}"
       opts$palette_colors <- "#ef4e00"
     }
@@ -442,7 +442,7 @@ server <- function(input, output, session) {
         leaflet::leafletOutput("lflt_viz", height = heigh_viz),
         type = "html", loader = "loader4"
       )
-     } else if (viz %in% c("map_bubbles")) {
+    } else if (viz %in% c("map_bubbles")) {
       shinycustomloader::withLoader(
         leaflet::leafletOutput("lflt_viz_bubbles", height = heigh_viz),
         type = "html", loader = "loader4"
@@ -468,12 +468,22 @@ server <- function(input, output, session) {
 
 
   observeEvent(input$lflt_viz_bubbles_marker_click, {
-    print(input$lflt_viz_bubbles_marker_click)
+    #print(input$lflt_viz_bubbles_marker_click)
     if (is.null(data_viz())) return()
     if (!"location lat" %in% names(data_viz())) return()
     req(actual_but$active)
     if (actual_but$active != "map_bubbles") return()
     click <- input$lflt_viz_bubbles_marker_click
+
+    # leafletProxy("lflt_viz_bubbles") %>%
+    #   setView(lng = click$lng, lat = click$lat, zoom = 10) |>
+    #   clearGroup(group = "Selected") %>%
+    #   addCircleMarkers(
+    #     lng = click$lng,
+    #     lat = click$lat,
+    #     color = "#ef4e00")
+
+
     if (!is.null(click)) {
       click_viz$info <- list("id_location_lat" = click$lat,
                              "id_location_lon" = click$lng)
@@ -481,8 +491,10 @@ server <- function(input, output, session) {
 
   })
 
+
+
   observeEvent(input$lflt_viz_shape_click, {
-    print(input$lflt_viz_shape_click)
+    #print(input$lflt_viz_shape_click)
     if (is.null(data_viz())) return()
     if (!"Country Region" %in% names(data_viz())) return()
     req(actual_but$active)
@@ -521,6 +533,10 @@ server <- function(input, output, session) {
     }
   })
 
+  observeEvent(actual_but$active, {
+    click_viz$info <- NULL
+  })
+
 
   # Click Info --------------------------------------------------------------
 
@@ -535,6 +551,7 @@ server <- function(input, output, session) {
     if (nrow(data_viz()) == 0) return( HTML("Unfortunately, there are no search results for your requested filters.<br/>
              Please try again with different filters"))
 
+
     tx <- write_html(data = data_down(),
                      dic = dic_pharma,
                      click = click_viz$info,
@@ -547,8 +564,44 @@ server <- function(input, output, session) {
                      "Health categories",
                      "Corruption categories",
                      "URL")
+    if (actual_but$active == "map_bubbles") {
+      if (is.null(tx)) {
+        df <- data_down() |>
+          filter(near(`location lon`, click_viz$info$id_location_lon, tol = 0.5))
+        df1 <- df |>
+          filter(near(`location lat`, click_viz$info$id_location_lat, tol = 0.5))
+
+        if (nrow(df1) == 0 ) {
+          df1 <- df |>
+            filter(near(`location lat`, click_viz$info$id_location_lat, tol = 1))
+          if (nrow(df1) == 0 ) {
+            df1 <- df |>
+              filter(near(`location lat`, click_viz$info$id_location_lat, tol = 2.8))
+          }
+        }
+        df <- df1
+        tx <- div(
+          p(style = "color: #e73247;margin-bottom:3%;",
+            "You are viewing information near the clicked point"),
+          write_html_extra(data = df,
+                               dic = dic_pharma,
+                               click = click_viz$info,
+                               class_title = "click-title",
+                               class_body = "click-text",
+                               id = "story-id",
+                               "English title",
+                               "Country Region",
+                               "Published-at",
+                               "Health categories",
+                               "Corruption categories",
+                               "URL")
+        )
+      }
+    }
     tx
   })
+
+
 
   # downloads ---------------------------------------------------------------
 
