@@ -1,4 +1,4 @@
-#webshot::install_phantomjs(force = T)
+webshot::install_phantomjs(force = F)
 library(dsmodules)
 library(hgchmagic)
 library(lfltmagic)
@@ -399,7 +399,8 @@ server <- function(input, output, session) {
     df <- dplyr::as_tibble(data_down())
     df$URL <- paste0("<a href='",df$URL,"'  target='_blank'>","link to view","</a>")
     df$`Links to similar articles` <- paste0("<a href='", df$`Links to similar articles`, "'  target='_blank'>","link to view","</a>")
-    df <- df |> dplyr::select(`Original title` = `native-title`, `URL`, `Media type`, `Source`, `English title`, `Publication year`,
+
+    df <- df |> dplyr::select(`Original title` = `native title`, `URL`, `Media type`, `Source`, `English title`, `Publication year`,
                               `Publication date`, `Country Region`, `Corruption case study`, `Associated topic`,
                               `Links to similar articles`, `Titles of similar articles`, `Corruption categories`,
                               `Health categories`)
