@@ -116,7 +116,7 @@ server <- function(input, output, session) {
     req(actual_but$active)
     req(data_titles())
     df <- data_titles()
-    cp <- unique(c("All", df$`Country Region`)) |>
+    cp <- unique(c("All", sort(df$`Country Region`))) |>
       setdiff("NA")
     if (actual_but$active %in% c("map_bubbles", "map")) {
       cp <- setdiff(cp, "No Location")
@@ -450,7 +450,7 @@ server <- function(input, output, session) {
       )
     } else if (viz == "table") {
       #shinycustomloader::withLoader(
-      DT::dataTableOutput("dt_viz", height = heigh_viz, width = width_viz)#,
+      DT::dataTableOutput("dt_viz", height = heigh_viz, width = width_viz - 200)#,
       # type = "html", loader = "loader4"
       #)
     } else {
@@ -624,10 +624,10 @@ server <- function(input, output, session) {
 
   observe({
     dsmodules::downloadTableServer("dropdown_table",
-                                   element = data_down(),
+                                   element = reactive(data_down()),
                                    formats = c("csv", "xlsx", "json"))
     dsmodules::downloadImageServer("download_viz",
-                                   element = viz_down(),
+                                   element = reactive(viz_down()),
                                    lib = "highcharter",
                                    formats = c("jpeg", "pdf", "png", "html"),
                                    file_prefix = "plot")
